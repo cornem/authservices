@@ -6,6 +6,7 @@ using System.IdentityModel.Configuration;
 using System.IdentityModel.Metadata;
 using System.IdentityModel.Services.Configuration;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,11 @@ namespace Kentor.AuthServices.Configuration
         /// when initiating the signin sequence.
         /// </summary>
         public TimeSpan MetadataCacheDuration { get; set; }
+
+        /// <summary>
+        /// The certificate used to sign service provider requests
+        /// </summary>
+        public X509Certificate2 SigningCertificate { get; set; }
 
         volatile private Saml2PSecurityTokenHandler saml2PSecurityTokenHandler;
 

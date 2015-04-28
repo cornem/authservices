@@ -72,7 +72,7 @@ namespace SampleOwinApplication
             // It's enough to just create the federation and associate it
             // with the options. The federation will load the metadata and
             // update the options with any identity providers found.
-            new Federation(new Uri("http://localhost:52071/Federation"), true, authServicesOptions);
+            //new Federation(new Uri("http://localhost:52071/Federation"), true, authServicesOptions);
 
             return authServicesOptions;
         }
@@ -90,8 +90,9 @@ namespace SampleOwinApplication
             {
                 EntityId = new EntityId("http://localhost:57294/AuthServices"),
                 ReturnUrl = new Uri("http://localhost:57294/Account/ExternalLoginCallback"),
-                DiscoveryServiceUrl = new Uri("http://localhost:52071/DiscoveryService"),
-                Organization = organization
+                //DiscoveryServiceUrl = new Uri("http://localhost:52071/DiscoveryService"),
+                Organization = organization,
+                SigningCertificate = new X509Certificate2(HostingEnvironment.MapPath("~/App_Data/Kentor.AuthServices.SP.pfx"), "somesecret")
             };
 
             var techContact = new ContactPerson

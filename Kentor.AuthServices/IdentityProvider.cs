@@ -13,6 +13,7 @@ using Kentor.AuthServices.Saml2P;
 using Kentor.AuthServices.WebSso;
 using System.Threading.Tasks;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Kentor.AuthServices
 {
@@ -222,7 +223,8 @@ namespace Kentor.AuthServices
                 AssertionConsumerServiceUrl = authServicesUrls.AssertionConsumerServiceUrl,
                 Issuer = spOptions.EntityId,
                 // For now we only support one attribute consuming service.
-                AttributeConsumingServiceIndex = spOptions.AttributeConsumingServices.Any() ? 0 : (int?)null
+                AttributeConsumingServiceIndex = spOptions.AttributeConsumingServices.Any() ? 0 : (int?)null,
+                SigningCertificate = spOptions.SigningCertificate
             };
 
             var responseData = new StoredRequestState(EntityId, returnUrl, relayData);

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Kentor.AuthServices.Internal;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using Kentor.AuthServices.Internal;
+using Kentor.AuthServices.WebSso;
 
 namespace Kentor.AuthServices.Saml2P
 {
@@ -42,6 +43,7 @@ namespace Kentor.AuthServices.Saml2P
             x.Add(base.ToXNodes());
             x.AddAttributeIfNotNullOrEmpty("AssertionConsumerServiceURL", AssertionConsumerServiceUrl);
             x.AddAttributeIfNotNullOrEmpty("AttributeConsumingServiceIndex", AttributeConsumingServiceIndex);
+            x.AddAttributeIfNotNullOrEmpty("ProtocolBinding", Saml2Binding.HttpPostUri);
 
             return x;
         }
@@ -52,9 +54,22 @@ namespace Kentor.AuthServices.Saml2P
         /// <returns>string containing the Xml data.</returns>
         public override string ToXml()
         {
+            if (SigningCertificate != null)
+            {
+                var xml = new XmlDocument();
+                var xelement = ToXElement();
+
+                using (var xmlReader = xelement.CreateReader())
+                    xml.Load(xmlReader);
+
+                xml.Sign(SigningCertificate);
+
+                return xml.OuterXml;
+            }
+
             return ToXElement().ToString();
         }
-
+        
         /// <summary>
         /// Read the supplied Xml and parse it into a authenticationrequest.
         /// </summary>
@@ -95,5 +110,10 @@ namespace Kentor.AuthServices.Saml2P
         /// Index to the SP metadata where the list of requested attributes is found.
         /// </summary>
         public int? AttributeConsumingServiceIndex { get; set; }
+
+        /// <summary>
+        /// The certificate used to sign the request
+        /// </summary>
+        public X509Certificate2 SigningCertificate { get; set; }
     }
 }

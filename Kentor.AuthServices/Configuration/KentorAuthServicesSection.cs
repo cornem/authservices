@@ -13,6 +13,7 @@ using Kentor.AuthServices.Metadata;
 using Kentor.AuthServices.Saml2P;
 using System.IdentityModel.Configuration;
 using System.IdentityModel.Services.Configuration;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Kentor.AuthServices.Configuration
 {
@@ -298,6 +299,27 @@ namespace Kentor.AuthServices.Configuration
             get
             {
                 return systemIdentityModelIdentityConfiguration;
+            }
+        }
+
+        /// <summary>
+        /// Certificate location for the certificate the Idp uses to sign its messages.
+        /// </summary>
+        [ConfigurationProperty("signingCertificate")]
+        public X509Certificate2 SigningCertificate
+        {
+            get
+            {
+                var element = (CertificateElement)base["signingCertificate"];
+
+                if (element != null)
+                    return element.LoadCertificate();
+
+                return null;
+            }
+            internal set
+            {
+                base["signingCertificate"] = value;
             }
         }
     }
